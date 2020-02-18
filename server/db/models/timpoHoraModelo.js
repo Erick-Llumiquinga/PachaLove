@@ -2,10 +2,8 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const TiempoModel = new Schema(
+const TiempoHoraModel = new Schema(
   {
-    ubicacion: {type: String},
-    timezone: {type: String},
     tiempo: {type: String},
     resumen: {type: String},
     precipitacionProb: {type: String},
@@ -16,4 +14,4 @@ const TiempoModel = new Schema(
   }
 );
 
-module.exports = mongoose.model('Tiempo', TiempoModel,'Tiempo');
+module.exports = mongoose.model('TiempoHora', TiempoHoraModel,'TiempoHora');

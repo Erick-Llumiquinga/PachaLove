@@ -1,13 +1,7 @@
-const mongoose = require('mongoose');
-
-const { Schema } = mongoose;
-
-const HuertoModel = new Schema(
-  {
-    nombre: {type: String},
-    tipo: {type: String},
-    tiempo: {type: String}
+module.exports = class Tiempo {
+  constructor(){
+    this.nombre = [];
+    this.tipo = "";
+    this.tiempo = "";
   }
-);
-
-module.exports = mongoose.model('Huerto', HuertoModel,'Huerto');
+}
