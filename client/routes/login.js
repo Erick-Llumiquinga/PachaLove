@@ -9,19 +9,19 @@ const screens = {
     Login: {
         screen: Login,
         navigationOptions: {
-            headerShown: false 
+            headerShown: false
         },
     },
     Registro: {
         screen: Registro,
         navigationOptions: {
-            headerShown: false  
+            headerShown: false
         },
     },
     Inicio: {
         screen: Home,
         navigationOptions: {
-            headerShown: false  
+            headerShown: false
         },
     },
 }
@@ -30,4 +30,3 @@ const screens = {
 const LoginStack = createStackNavigator(screens);
 
 export default createAppContainer(LoginStack);
-
