@@ -1,26 +1,22 @@
 import React, { Component } from 'react';
 import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Icon, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faUser, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 
 
 const API_URL = 'http://192.168.100.12:8001/server/menu/platos'
 const API = 'http://192.168.100.12:8001/server/menu'
-export default class Home extends Component{
+export default class Tips extends Component{
     constructor(props) {
         super(props);
         this.state = {
-          ruta:'',
-          API: '',
-          nombre: '',
-          img: ''
+            plato: this.plato,
+            valor: this.valor,
+            datos: []
         }
     }
 
 
-     componentDidMount() {
-      this.setState({API: `http://192.168.100.12:8001/server/${this.state.ruta}`});
+    async componentDidMount() {
     }
 
     localStoragge = async () =>{
@@ -66,50 +62,27 @@ export default class Home extends Component{
         })
     }
 
-    getClima = () => {
-      this.setState({ruta: `getDatasTime`})
+    getPlatos = () => {
 
-      let header = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+        let header = {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
         }
-      }
 
-      return fetch(this.state.API,header)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.forEach(element => {
-          this.setState({nombre: element.nombre, img: element.img})
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-    }
-
-    getDatos = () => {
-      this.setState({ruta: `getData?email=${this.state.email}`})
-
-      let header = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }
-      }
-
-      return fetch(this.state.API,header)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.forEach(element => {
-          this.setState({nombre: element.nombre, img: element.img})
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      })
+       return fetch(API_URL,header)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if(responseJson.ok != false){
+                    this.state.datos = responseJson.datos
+                    alert(this.state.datos)
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            })
     }
 
     signOut = async () => {
@@ -119,16 +92,16 @@ export default class Home extends Component{
     render() {
         return (
           <Container>
-            <ImageBackground source={require('../assets/img/background.png')} style={styles.container}>
-            <Header hasTabs style={styles.header}>
+              <Content style={styles.container}>
+              <Header hasTabs style={styles.header}>
               <Left>
-                <FontAwesomeIcon icon={faUser}/>
+
               </Left>
               <Body>
                 <Text style={styles.textoHeader}>Inicio</Text>
               </Body>
               <Right>
-              <FontAwesomeIcon icon={faEllipsisV} style={{right: '10%'}}/>
+
               </Right>
             </Header>
             <Content>
@@ -144,7 +117,8 @@ export default class Home extends Component{
             </Content>
             <Content>
             </Content>
-            </ImageBackground>
+            
+              </Content>
           </Container>
 
         )
@@ -153,11 +127,10 @@ export default class Home extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    width: '112%',
-    height: '104%',
-    position: 'relative',
-    right: '0%',
-    bottom: '3%'
+    width: '100%',
+    height: '100%',
+    //position: 'relative',
+    backgroundColor: '#1E1C1C'
   },
   textoHeader: {
     color: '#ffffff',
@@ -166,7 +139,7 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: 'rgba(255, 255, 255, 0.336)', 
-    //top: '12%',
+    top: '12%',
     borderRadius: 15,
   },
   hairline: {

@@ -10,7 +10,7 @@ const db = mongoose.connect('mongodb://localhost/PachaLove');
 
 let hourNow = "";
 
-routerApi.route('/tips/getTime')
+routerApi.route('/getDatasTime')
   .get((req, res) => {
 
     let latitud =  '-0.225219'//req.query.latitud;
@@ -60,7 +60,7 @@ routerApi.route('/tips/getTime')
             if(err1){
               return res.send(err1)
             }
-              responseJson.hourly.data.forEach((item) => {
+            responseJson.hourly.data.forEach((item) => {
                 let modelHour = {
                   tiempo: item.time,
                   resumen:  item.summary,

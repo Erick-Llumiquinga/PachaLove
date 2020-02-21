@@ -74,13 +74,15 @@ export default class Login extends Component {
                     <Content contentContainerStyle={styles.content}>
 
                             <Text style={styles.titulo}>
-                            ORDER
+                                PACHA
+                                {"\n"}
+                                LOVE
                              </Text>
 
 
                     <Card style={styles.cardMom}>
                             <CardItem style={styles.card}>
-                                <Body style={styles.input}>
+                                <Body >
                                     <Item inlineLabel>
                                         <Label style={styles.input1}>Correo:</Label>
                                         <Input style={styles.textoBlanco} onChangeText={this.handleUsuario}/>
@@ -93,7 +95,7 @@ export default class Login extends Component {
 
                                     </Item>
 
-                                    <Button rounded style={styles.btn} onPress={() =>this.props.navigation.push('Registro')}>
+                                    <Button rounded style={styles.btn} onPress={() =>this.props.navigation.push('Menu')}>
                                         <Text style={styles.txt} >Ingresar</Text>
                                     </Button>
                                     <Button rounded style={styles.btn2} onPress={() => this.props.navigation.push('Registro')}>
@@ -121,15 +123,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         borderRadius: 30,
-        right: '8%',
+        width: '80%',
+        left: '5%',
+        top: '10%'
     },
     titulo: {
         flex: 1,
         width: '100%',
-        marginTop: '21%',
+        height: '50%',
+        marginTop: '14%',
         fontSize: 60,
-        marginLeft: '24%',
-        color: 'rgb(78, 80, 80)',
+        right: '5%',
+        textAlign: "center",
+        color: 'white',
 
     },
     cargando: {
@@ -137,59 +143,42 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: '21%',
         fontSize: 60,
-        marginLeft: '24%',
         color: '#EFFBF8',
 
     },
     content: {
         flex: 1,
         justifyContent: 'center',
-        width: '75%',
+        width: '100%',
         height: '100%',
-        marginLeft: '13%',
         paddingBottom: '25%',
-
-
     },
     card: {
-        backgroundColor: 'rgba(106, 115, 39, 0.616)',
-        paddingBottom: '10%',
+        backgroundColor: '#00000059',
         borderRadius: 30,
+        width: '100%',
     },
     input1: {
         color: '#EFFBF8',
         fontSize: 20,
-        left: '50%'
-    },
-    input2: {
-        color: '#EFFBF8',
-        fontSize: 20,
-
+        left: '10%'
     },
     input3: {
         color: '#EFFBF8',
         fontSize: 20,
-        left: '50%'
-
-    },
-    input4: {
-        color: '#EFFBF8',
-        fontSize: 25,
-        paddingTop: '5%',
-
-
+        left: '10%'
     },
     btn: {
         marginTop: '15%',
         marginLeft: '25%',
-        backgroundColor: 'rgb(163, 118, 79)',
+        backgroundColor: 'rgba(102, 255, 0, 0.336)',
         width: '50%',
         justifyContent: 'center',
     },
     btn2: {
         marginTop: '5%',
         marginLeft: '25%',
-        backgroundColor: 'rgb(133, 95, 62)',
+        backgroundColor: '#22649670',
         width: '50%',
         justifyContent: 'center',
 
@@ -199,6 +188,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     textoBlanco: {
-        color: '#ffffff'
+        color: '#ffffff',
+        textAlign: 'right'
     }
 });
