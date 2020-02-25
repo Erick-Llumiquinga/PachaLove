@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Icon, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
 import base64 from 'react-native-base64';
+import { Icon } from 'react-native-elements'
 
 export default class Perfil extends Component{
     constructor(props) {
@@ -13,25 +14,27 @@ export default class Perfil extends Component{
           repClave: '',
           img: '',
           ruta:'',
-          API: ''
+          API: '',
+          user: {}
         }
     }
 
 
     async componentDidMount() {
+      this.localStoragge();
       this.setState({API: `http://192.168.100.12:8001/server/${this.state.ruta}`});
     }
 
     localStoragge = async () =>{
         try{
-             this.setState({ email: await AsyncStorage.getItem('email')})
+             this.setState({ user: JSON.parse(await AsyncStorage.getItem('User'))})
         }
         catch(error){
             console.log(error)
         }
     }
 
-    getDatos = () => {
+    /*getDatos = () => {
       this.setState({ruta: `getData?email=${this.state.email}`})
 
       let header = {
@@ -52,7 +55,7 @@ export default class Perfil extends Component{
       .catch((error) => {
         console.error(error);
       })
-    }
+    }*/
 
     cambioClave = () => {
 
@@ -132,25 +135,31 @@ export default class Perfil extends Component{
     render() {
         return (
           <Container>
-              <Content style={styles.container}>
                 <Content style={styles.container}>
-                  <Content>
-                    <Image source={require('../assets/iconos/regreso.png')} onPress={this.back}/>
-                    <Text onPress={this.signOut}>Cerrar Sesion <Image source={require('../assets/iconos/cerrar-sesion.png')}/></Text>
+                <Header hasTabs style={styles.header} >
+                  <Left> 
+                    <Icon name='reply' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Inicio')}/>        
+                  </Left >
+                  <Right>
+                    <Icon name='sign-out' type='octicon' color='white' size={25} onPress={() => this.props.navigation.push('Perfil')}/>
+                    <Text onPress={this.signOut}>Cerrar Sesion  </Text>
+                  </Right>
+                </Header>
+                  <Content style={styles.user}>
+                    <Icon name='user-circle' type='font-awesome' color='white' size={200} />
+                    <Image source={{uri: this.state.img}} />
+                    <Text>{this.state.user.nombre}</Text>
                   </Content>
-                  <Content>
-                    <Image source={{uri: this.state.img}}/>
-                    <Text>{this.state.nombre}</Text>
-                  </Content>
+                    
+                  <Content style={{marginTop: '30%', height: '100%'}}>
                     <Label>Informacio Personal</Label>
-                  <Content>
-                    <Text onPress={() =>this.props.navigation.push('Menu')}><Image source={require('../assets/iconos/proteger.png')}/> Datos Persoanles</Text>
+                    <Icon name='verified-user' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Inicio')}/>
+                    <Text onPress={() =>this.props.navigation.push('Menu')}>Datos Persoanles</Text>
                     <View style={styles.hairline} />
-                    <Text onPress={() =>this.props.navigation.push('Menu')}><Image source={require('../assets/iconos/cerrar-sesion.png')}/> Cambiar Contraseña</Text>
+                    <Text onPress={() =>this.props.navigation.push('Menu')}>Cambiar Contraseña</Text>
                     <View style={styles.hairline} />
                   </Content>
                 </Content>
-              </Content>
           </Container>
         )
     }
@@ -158,9 +167,9 @@ export default class Perfil extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    flex:1,
+    //resizeMode: 'cover',
     height: '100%',
-    //position: 'relative',
     backgroundColor: '#1E1C1C'
   },
   textoHeader: {
@@ -169,13 +178,22 @@ const styles = StyleSheet.create({
     left: '10%'
   },
   header: {
-    backgroundColor: 'rgba(255, 255, 255, 0.336)', 
-    top: '12%',
-    borderRadius: 15,
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    top: '5%',
+    width:'100%'
   },
   hairline: {
     backgroundColor: '#A2A2A2',
     height: 1,
     width: '100%'
+  },
+  back: {
+    height: '10%',
+    width: '10%',
+    padding: '15%'
+  },
+  user: {
+    top: '5%'
   }
 })

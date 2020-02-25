@@ -25,7 +25,7 @@ export default class Detalle extends Component{
       }
     }
 
-    back = () =>{
+    back = async() =>{
       try{
         await AsyncStorage.clear();
       }
@@ -62,7 +62,7 @@ export default class Detalle extends Component{
     render() {
         return (
           <Container>
-              <ImageBackground source={require('../assets/img/background.jpg')} style={styles.container}>
+              <ImageBackground source={require('../assets/img/background.png')} style={styles.container}>
               <Content transparent>
                 <Image source={require('../assets/iconos/regreso.png')} onPress={this.back}/>
               </Content>

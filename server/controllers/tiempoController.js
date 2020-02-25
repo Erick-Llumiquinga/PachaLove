@@ -30,6 +30,16 @@ routerApi.route('/getDatasTime')
       velocidadViento: {type: Number},
     }
 
+    let modelHour = {
+      tiempo: {type: String},
+      resumen: {type: String},
+      precipitacionProb: {type: String},
+      precipitacionTipo: {type: String},
+      temperatura: {type: String},
+      humedad: {type: String},
+      velocidadViento: {type: String},
+    }
+
     const header = {
         method: 'GET',
         headers: {
@@ -43,64 +53,72 @@ routerApi.route('/getDatasTime')
       return   res.send(err)
     }
       else if(resp.length == 0){
+        console.log('entro a pedir el clima')
       fetch(urlWheater,header)
       .then((response) => response.json())
       .then((responseJson) => {
+        console.log('pido el clima')
           model.timezone = responseJson.timezone;
-          model.tiempo = responseJson.currently.time;
+          model.tiempo = (responseJson.currently.time).toString();
           model.resumen = responseJson.currently.summary;
-          model.precipitacionProb = responseJson.currently.precipProbability;
+          model.precipitacionProb = (responseJson.currently.precipProbability).toString();
           model.precipitacionTipo = responseJson.currently.precipType;
-          model.temperatura = (responseJson.currently.temperature - 32) * (5/9);
-          model.humedad = responseJson.currently.humidity;
-          model.velocidadViento = (responseJson.currently.windSpeed * 1609);
-
+          model.temperatura = (responseJson.currently.temperature).toString() ;
+          model.humedad = (responseJson.currently.humidity).toString();
+          model.velocidadViento = (responseJson.currently.windSpeed * 1609).toString();
           let tiempo = new TiempoModel(model);
           tiempo.save((err1, resp1) => {
             if(err1){
-              return res.send(err1)
+              return res.json(err1)
             }
             responseJson.hourly.data.forEach((item) => {
-                let modelHour = {
-                  tiempo: item.time,
-                  resumen:  item.summary,
-                  precipitacionProb: item.precipProbability,
-                  precipitacionTipo: item.precipType,
-                  temperatura: (item.temperature - 32) * (5/9),
-                  humedad: item.humidity,
-                  velocidadViento: (item.windSpeed * 1609)
-                }
+                modelHour.tiempo = item.time.toString();
+                modelHour.resumen = item.summary;
+                modelHour.precipitacionProb = item.precipProbability.toString();
+                modelHour.precipitacionTipo = item.precipType;
+                modelHour.temperatura = item.temperature.toString() ;
+                modelHour.humedad = item.humidity.toString();
+                modelHour.velocidadViento = (item.windSpeed * 1609).toString();
 
                 let tiempoHora = new TiempoHoraModel(modelHour);
                 tiempoHora.save((err1, resp1) => {
                   if(err1){
-                    return res.send(err1)
+                    console.log(err1)
                   }
+                  console.log('guarda el clima por hora')
                 })
-              });
-              res.send('Dato Actual');
+            });
+            console.group('Dato actual')
           })
         })
       }
       else{
       TiempoHoraModel.findOne({'tiempo': hourActuallity},(err1,resp1) => {
-         if(err){
-           return err
-         }
-         else{
-           TiempoModel.updateOne({'_id': resp.id},resp1,(err2,resp2) =>{
-            if(err){
-              return err;
-            }
-            return true;
-           })
-         }
-         res.send('Actualizacion')
+        console.log('entro al ultimo else') 
+        if(err1){
+          console.log('entro al if');
+        }
+        else{
+          console.log('entro al  else') 
+            TiempoModel.updateOne({'_id': resp.id},resp1,(err2,resp2) =>{
+              if(err){
+                console.log(err);
+              }
+              console.log('actualiza los datos en la base del tiempo')
+              return true;
+            })
+          }
+        console.log('Actualizacion')
        })
       };
-      res.json(resp.length);
+      return res.json(resp);
     });
   });
+
+
+
+
+
 
   routerApi.route('/tips/newTip')
     .post((req, res) => {

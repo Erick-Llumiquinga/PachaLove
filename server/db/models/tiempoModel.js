@@ -4,13 +4,13 @@ const { Schema } = mongoose;
 
 const TiempoModel = new Schema(
   {
-    ubicacion: {type: String},
+    ubicacion: {type: Array},
     timezone: {type: String},
-    tiempo: {type: String},
+    tiempo: {type: Number},
     resumen: {type: String},
     precipitacionProb: {type: String},
     precipitacionTipo: {type: String},
-    temperature: {type: String},
+    temperatura: {type: String},
     humedad: {type: String},
     velocidadViento: {type: String},
   }

@@ -5,9 +5,9 @@ const { Schema } = mongoose;
 const usuarioModel = new Schema(
   {
     nombre: {type: String},
-    apellido: {type: String},
     correo: {type: String},
-    clave: {type: String}
+    clave: {type: String},
+    img: {type:String}
   }
 );
 

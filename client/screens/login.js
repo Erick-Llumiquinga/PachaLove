@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import * as Font from 'expo-font';
 import { StyleSheet, ImageBackground, Text, AsyncStorage } from 'react-native';
-import { Container, Content, Card, CardItem, Body, Item, Label, Input, Button, Spinner  } from 'native-base';
+import { Container, Content, Card, CardItem, Body, Item, Label, Input, Button  } from 'native-base';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-const API_URL = "http://192.168.100.12:8001/server/login";
+const API_URL = "http://192.168.100.30:3000/server/login";
 
 export default class Login extends Component {
 
@@ -12,8 +13,23 @@ export default class Login extends Component {
         this.state = {
             fontLoaded: false,
             usuario: '',
-            clave: ''
+            clave: '',
+            loading: false
         };
+    }
+
+    cargar = async () => {
+        if(this.state.usuario != "" && this.state.clave != ""){
+            try{
+                await this.setState({loading: true})
+            }
+            catch(err){
+                alert(err)
+            }
+            return this.login();    
+        } 
+        
+        return alert("Campos Vacios")
     }
 
     handleUsuario = text => {
@@ -29,7 +45,7 @@ export default class Login extends Component {
 
     localStoragge = async () => {
         try{
-            await AsyncStorage.setItem('User', this.state.usuario);
+            await AsyncStorage.setItem('Correo', this.state.usuario);
         }
         catch(error){
             console.log(error);
@@ -45,7 +61,7 @@ export default class Login extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                nombre: this.state.usuario,
+                correo: this.state.usuario,
                 clave: this.state.clave
             })
         }
@@ -53,11 +69,10 @@ export default class Login extends Component {
        return fetch(API_URL,header)
             .then((response) => response.json())
             .then((responseJson) => {
-                if(responseJson.mensaje != 'inc'){
-                    this.localStoragge();
-                    return this.props.navigation.push('Inicio')
-                }
-                return alert('Datos incorrectos')
+                
+                this.localStoragge();
+                this.setState({loading: false})
+                return this.props.navigation.push('Inicio')
             })
             .catch((error) => {
                 console.error(error);
@@ -65,21 +80,16 @@ export default class Login extends Component {
 
     }
 
-
     render() {
         return (
             <Container>
-                <ImageBackground source={require('../assets/img/backgroundLogin.png')} style={styles.container}>
-
+                <ImageBackground source={require('../assets/img/backgroundLogin.jpg')} style={styles.container}>
                     <Content contentContainerStyle={styles.content}>
-
                             <Text style={styles.titulo}>
                                 PACHA
                                 {"\n"}
                                 LOVE
                              </Text>
-
-
                     <Card style={styles.cardMom}>
                             <CardItem style={styles.card}>
                                 <Body >
@@ -88,14 +98,10 @@ export default class Login extends Component {
                                         <Input style={styles.textoBlanco} onChangeText={this.handleUsuario}/>
                                     </Item>
                                     <Item inlineLabel last>
-
                                         <Label style={styles.input3}>Clave:</Label>
-
                                         <Input style={styles.textoBlanco} onChangeText={this.handleClave} secureTextEntry={true}/>
-
                                     </Item>
-
-                                    <Button rounded style={styles.btn} onPress={() =>this.props.navigation.push('Menu')}>
+                                    <Button rounded style={styles.btn} onPress={this.cargar}>
                                         <Text style={styles.txt} >Ingresar</Text>
                                     </Button>
                                     <Button rounded style={styles.btn2} onPress={() => this.props.navigation.push('Registro')}>
@@ -106,18 +112,25 @@ export default class Login extends Component {
                         </Card>
                     </Content>
                 </ImageBackground>
+                <Spinner
+                    visible={this.state.loading}
+                    textContent={'Cargando..'}
+                    color='white'
+                    overlayColor='rgba(0, 0, 0, 0.568)'
+                    textStyle={styles.spinnerTextStyle}
+                />
             </Container>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    spinnerTextStyle: {
+        color: 'white'
+    },
     container: {
-        width: '112%',
-        height: '104%',
-        position: 'relative',
-        right: '0%',
-        bottom: '3%'
+        flex:1,
+        resizeMode: 'cover'
     },
     cardMom: {
         backgroundColor: 'transparent',
@@ -171,14 +184,14 @@ const styles = StyleSheet.create({
     btn: {
         marginTop: '15%',
         marginLeft: '25%',
-        backgroundColor: 'rgba(102, 255, 0, 0.336)',
+        backgroundColor: 'rgba(102, 255, 0, 0.411)',
         width: '50%',
         justifyContent: 'center',
     },
     btn2: {
         marginTop: '5%',
         marginLeft: '25%',
-        backgroundColor: '#22649670',
+        backgroundColor: '#22649688',
         width: '50%',
         justifyContent: 'center',
 
