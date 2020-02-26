@@ -60,7 +60,13 @@ routerApi.route('/getDatasTime')
         console.log('pido el clima')
           model.timezone = responseJson.timezone;
           model.tiempo = (responseJson.currently.time).toString();
-          model.resumen = responseJson.currently.summary;
+          if(responseJson.currently.summary == 'Possible Light Rain'){
+            model.resumen = 'Posible lluvia ligera';
+          }
+          else{
+            model.resumen = responseJson.currently.summary;
+          }
+          
           model.precipitacionProb = (responseJson.currently.precipProbability).toString();
           model.precipitacionTipo = responseJson.currently.precipType;
           model.temperatura = (responseJson.currently.temperature).toString() ;

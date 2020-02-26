@@ -24,7 +24,7 @@ export default class Home extends Component{
 
     localStoraggeUser = async (res) =>{
         try{
-          await AsyncStorage.setItem('User', JSON.z(res))
+          await AsyncStorage.setItem('User', JSON.stringify(res))
         }
         catch(error){
           console.log(error)
@@ -52,7 +52,7 @@ export default class Home extends Component{
 
     getClima = () => {
 
-      const API = 'http://192.168.100.30:3000/server/client/getDatasTime';
+      const API = 'http://192.168.100.3:3000/server/client/getDatasTime';
       let header = {
         method: 'GET',
         headers: {
@@ -75,7 +75,7 @@ export default class Home extends Component{
 
       this.clearLocalStoragge()
 
-      const API = `http://192.168.100.30:3000/server/getDataUser?correo=${this.state.correo}`;
+      const API = `http://192.168.100.3:3000/server/getDataUser?correo=${this.state.correo}`;
 
       if(this.statusUser === false){
         
@@ -121,10 +121,10 @@ export default class Home extends Component{
               <Right>
                 <Icon name='more-vert' type='material' color='white' size={40} style={{right: '5%'}} onPress={() => this.props.navigation.push('Menu')}/>
               </Right>
-          </Header>
-          <Content>
-              <Label>{this.state.clima.temperatura}</Label>
-              <Text>{this.state.clima.resumen}</Text>
+            </Header>
+          <Content style={{top: '10%'}}>
+              <Label style={{textAlign: 'center', fontSize: 80}}>{this.state.clima.temperatura} ºF</Label>
+              <Text style={{textAlign: 'center', fontSize: 20, marginTop: '5%', color: 'white'}}>{this.state.clima.resumen}</Text>
           </Content>
           <Content>
             <Label>Aviso de la planta</Label>

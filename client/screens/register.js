@@ -5,7 +5,7 @@ import { Container, Content, Card, CardItem, Body, Item, Label, Input, Button } 
 import Spinner from 'react-native-loading-spinner-overlay';
 
 
-const API_URL = "http://192.168.100.30:3000/server/register";
+const API_URL = "http://192.168.100.3:3000/server/register";
 
 export default class Register extends Component {
     constructor(props){

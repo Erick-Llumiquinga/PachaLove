@@ -1,45 +1,63 @@
 import React, { Component } from 'react';
-import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Icon, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
-
+import { Image, Modal, TouchableHighlight, View, Alert, Text, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
+import { Container, Header, Content, Card, Item,CardItem, Footer, Input,FooterTab, Button, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
+import { Icon } from 'react-native-elements'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const API_URL = 'http://192.168.100.12:8001/server/menu/platos'
-const API = 'http://192.168.100.12:8001/server/menu'
+
 export default class Nueva extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            plato: this.plato,
-            valor: this.valor,
-            datos: []
+            nombre: '',
+            suelo: '',
+            planta: '',
+            fecha: '',
+            loading: false
         }
     }
 
 
-    async componentDidMount() {
+    componentDidMount() {
     }
 
-    localStoragge = async () =>{
-        try{
-             this.state.usuario = await AsyncStorage.getItem('User');
-        }
-        catch(error){
-            console.log(error)
-        }
-    }
+    cargar = async () => {
+      if(this.state.nombre != "" && this.state.planta != "" && this.state.suelo){
+          try{
+              await this.setState({loading: true})
+          }
+          catch(err){
+              alert(err)
+          }
+          return this.postPlanta();    
+      } 
+      
+      return alert("Campos Vacios")
+  }
 
-    realizarPedido = () => {
-      let tabla = "pedido";
+    handlePlanta = text => {
+      this.setState({ planta: text });
+    };
+
+    handleNombre = text => {
+      this.setState({ nombre: text });
+    };
+
+    handleSuelo = text => {
+      this.setState({ suelo: text });
+    };
+
+    postPlanta = () => {
+
+      const API = 'http://192.168.100.3:3000/server/newPlant'
 
         let data = {
-            tabla: tabla,
-            datos:
-              {
-                platoId: 1,
-                descripcion: this.state.plato,
-                cantidad: 2,
-              }
-        };
+            nombre: this.state.nombre,
+            suelo: this.state.suelo,
+            planta: this.state.planta,
+            fecha: ''
+          }
 
         let header = {
             method: 'POST',
@@ -53,36 +71,12 @@ export default class Nueva extends Component{
         return fetch(API,header)
         .then((response) => response.json())
         .then((responseJson) => {
-            if(responseJson.ok != false){
-                alert('Pedido realizado')
-            }
+          this.setState({loading: false})
+          return this.props.navigation.push('Huerto')
         })
         .catch((error) => {
             console.error(error);
         })
-    }
-
-    getPlatos = () => {
-
-        let header = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        }
-
-       return fetch(API_URL,header)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if(responseJson.ok != false){
-                    this.state.datos = responseJson.datos
-                    alert(this.state.datos)
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            })
     }
 
     signOut = async () => {
@@ -90,61 +84,87 @@ export default class Nueva extends Component{
     }
 
     render() {
-        return (
-          <Container>
-              <Content style={styles.container}>
-              <Header hasTabs style={styles.header}>
-              <Left>
-
-              </Left>
-              <Body>
-                <Text style={styles.textoHeader}>Inicio</Text>
-              </Body>
-              <Right>
-
-              </Right>
+      return (
+        <Container>
+          <ImageBackground source={require('../assets/img/nuevaSiembra.jpg')} style={styles.background}>
+          <Header hasTabs style={styles.header} >
+                  <Left> 
+                    <Icon name='reply' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Huerto')}/>        
+                  </Left >
+                  <Body>
+                    <Text style={styles.textoHeader}>Nueva Siembra</Text>
+                  </Body>
+                  <Right />
             </Header>
-            <Content>
-              <Label>10º C</Label>
-              <Text>Presipitacion baja</Text>
-            </Content>
-            <Content>
-            <Label>10º C</Label>
-            <Text>OR</Text>
-            <Text>OR</Text>
-            <Text>OR</Text>
-            <View style={styles.hairline} />
-            </Content>
-            <Content>
-            </Content>
-            
-              </Content>
-          </Container>
-
-        )
+          <Content style={{top: '5%', marginHorizontal: '5%'}}>
+          <Label style={{color: 'whitea', fontSize: 20, marginBottom: '10%'}}>Información de tu plantita!</Label>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+           <Body >
+              <Item inlineLabel>
+                  <Label style={styles.input}>Planta:</Label>
+                  <Input style={styles.textoBlanco} onChangeText={this.handlePlanta}/>
+              </Item>
+              <Item inlineLabel last>
+                  <Label style={styles.input}>Nombre:</Label>
+                  <Input style={styles.textoBlanco}  onChangeText={this.handleNombre} />
+              </Item>
+              <Item inlineLabel last>
+                  <Label style={styles.input}>Tipo de suelo:</Label>
+                  <Input style={styles.textoBlanco} onChangeText={this.handleSuelo} />
+              </Item>
+            </Body>
+          </View>
+          <View style={styles.hairline} />
+        </Content>
+        <View>
+            <Button block  style={styles.btn} onPress={this.cargar}>
+              <Text style={{color: 'white', fontSize: 20}}>Guardar</Text>
+            </Button>
+          </View>
+          </ImageBackground>
+          <Spinner
+                    visible={this.state.loading}
+                    textContent={'Cargando..'}
+                    color='white'
+                    overlayColor='rgba(0, 0, 0, 0.568)'
+                    textStyle={styles.spinnerTextStyle}
+                />
+        </Container>
+      )
     }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    //position: 'relative',
-    backgroundColor: '#1E1C1C'
+  spinnerTextStyle: {
+    color: 'white'
+  },
+  background: {
+    flex:1,
+    resizeMode: 'cover'
   },
   textoHeader: {
     color: '#ffffff',
-    fontSize: 25,
+    fontSize: 20,
     left: '10%'
   },
   header: {
-    backgroundColor: 'rgba(255, 255, 255, 0.336)', 
-    top: '12%',
-    borderRadius: 15,
+    backgroundColor: 'transparent', 
+    borderRadius: 10,
+    top: '5%',
+    width:'100%'
   },
   hairline: {
     backgroundColor: '#A2A2A2',
     height: 1,
     width: '100%'
-  }
+  },
+  btn: {
+    backgroundColor: 'rgba(102, 255, 0, 0.411)',
+    justifyContent: 'center',
+  },
+  input : {
+    color: '#ffffff',
+    fontSize: 17,
+    left: '10%'
+  },
 })

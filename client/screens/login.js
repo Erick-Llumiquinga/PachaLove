@@ -4,7 +4,7 @@ import { StyleSheet, ImageBackground, Text, AsyncStorage } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Item, Label, Input, Button  } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const API_URL = "http://192.168.100.30:3000/server/login";
+const API_URL = "http://192.168.100.3:3000/server/login";
 
 export default class Login extends Component {
 

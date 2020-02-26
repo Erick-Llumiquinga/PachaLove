@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Icon, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
-
+import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
+import { Icon } from 'react-native-elements'
 
 const API_URL = 'http://192.168.100.12:8001/server/menu/platos'
 const API = 'http://192.168.100.12:8001/server/menu'
@@ -18,19 +18,25 @@ export default class Menu extends Component{
 
     render() {
         return (
-          <Container>
-              <Content style={styles.container}>
-                <Content style={styles.container}>
-                    <Label>Menu</Label>
-                    <Content>
-                        <Text onPress={() =>this.props.navigation.push('Huerto')}>Mi Huerto</Text>
+          <Container style={styles.container}>
+            <Header hasTabs style={styles.header} >
+                  <Left> 
+                    <Icon name='reply' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Inicio')}/>        
+                  </Left >
+                  <Right />
+            </Header>
+              <Content style={{marginHorizontal: '10%'}}>
+                  <View style={{top: '10%', }}>
+                    <Label style={{textAlign: 'center', fontSize: 40, color: 'white'}}>Menu</Label>
+                  </View>
+                    <View style={{marginTop: '20%', position: 'relative', }}>
+                        <Text onPress={() =>this.props.navigation.push('Huerto')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Mi Huerto</Text>
                         <View style={styles.hairline} />
-                        <Text onPress={() =>this.props.navigation.push('Reciclaje')}>Tips Reciclaje</Text>
+                        <Text onPress={() =>this.props.navigation.push('Reciclaje')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Tips Reciclaje</Text>
                         <View style={styles.hairline} />
-                        <Text onPress={() =>this.props.navigation.push('Inicio')}>Tips Sembrio</Text>
+                        <Text onPress={() =>this.props.navigation.push('Inicio')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Tips Sembrio</Text>
                         <View style={styles.hairline} />
-                    </Content>
-                </Content>
+                    </View>
               </Content>
           </Container>
 
@@ -42,7 +48,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    //position: 'relative',
     backgroundColor: '#1E1C1C'
   },
   textoHeader: {
@@ -51,9 +56,10 @@ const styles = StyleSheet.create({
     left: '10%'
   },
   header: {
-    backgroundColor: 'rgba(255, 255, 255, 0.336)', 
-    top: '12%',
-    borderRadius: 15,
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    top: '5%',
+    width:'100%'
   },
   hairline: {
     backgroundColor: '#A2A2A2',
