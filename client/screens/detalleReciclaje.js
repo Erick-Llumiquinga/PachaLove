@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Image, Text, StyleSheet, ImageBackground, AsyncStorage, Alert } from 'react-native';
-import {  Container, Content, Header, Button, Left, Right, Body, Icon, Card,CardItem, Label, Input,Item } from 'native-base';
+import {  Container, Content, Header, Button, Left, Right, Body, Card,CardItem, Label, Input,Item } from 'native-base';
+import { Icon } from 'react-native-elements'
 export default class Detalle extends Component{
     constructor(props) {
       super(props);
       this.state ={
-        id: '',
-        titulo: '',
-        contenido: '',
-        img: ''
+        tips: {}
       }
     }
 
@@ -17,87 +15,71 @@ export default class Detalle extends Component{
     }
 
     localStoragge = async () =>{
-      try{
-           this.setState({ id: await AsyncStorage.getItem('id')})
-      }
-      catch(error){
-          console.log(error)
-      }
-    }
-
-    back = async() =>{
-      try{
-        await AsyncStorage.clear();
-      }
-      catch(err){
-        alert(err)
-      }
-      return this.props.navigation.push('Inicio');
-    }
-
-    getTips = () => {
-      this.setState({ruta: `/recicler/getTips?id=${this.state.id}`})
-
-      let header = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+        try{
+          this.setState({tips: JSON.parse(await  AsyncStorage.getItem('tips'))}) 
         }
-      }
-
-      return fetch(this.state.API,header)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.forEach(element => {
-          this.setState({titulo: element.titulo, contenido: element.contenido,img: element.img})
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      })
+        catch(error){
+            console.log(error)
+        }
     }
 
+    deleteStoragge = async () =>{
+        try{
+             await AsyncStorage.clear();
+        }
+        catch(error){
+            console.log(error)
+        }
+        this.props.navigation.push('Home');
+    }
 
     render() {
         return (
           <Container>
-              <ImageBackground source={require('../assets/img/background.png')} style={styles.container}>
-              <Content transparent>
-                <Image source={require('../assets/iconos/regreso.png')} onPress={this.back}/>
-              </Content>
-                <Content transparent>
+              <ImageBackground source={require('../assets/img/background.jpg')} style={styles.background}>
+              <Header hasTabs style={styles.header} >
+                  <Left> 
+                    <Icon name='reply' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Tips')}/>        
+                  </Left >
+                  <Body>
+                    <Text style={styles.textoHeader}>Nueva Siembra</Text>
+                  </Body>
+                  <Right />
+            </Header>
+                <Content transparent style={{top: '5%'}}>
                   <Card transparent>
-                    <CardItem style={styles.card}>
+                  <CardItem style={styles.card}>
                       <Body style={{alignItems: 'center'}}>
-                        <Image source={{uri: this.state.img}} style={styles.logo}/>
+                        <Image source={{uri: this.state.tips.imagen}} style={styles.logo}/>
+                        <Label>Descripcion:</Label>
+                        <Text>{this.state.tips.descripcion}</Text>
                       </Body>
                     </CardItem>
                     <CardItem style={styles.card}>
                       <Body style={{alignItems: 'center'}}>
-                        <Text style={{fontSize: 30}}>{this.state.titulo}</Text>
+                        <Text style={{fontSize: 30}}>{this.state.tips.titulo}</Text>
                       </Body>
                     </CardItem>
-                    <CardItem style={styles.card}>
-                      <Body style={{alignItems: 'center'}}>
-                        <Text style={{fontSize: 30}}>{this.state.contenido}</Text>
-                      </Body>
+                    <CardItem style={{backgroundColor: '#c9c7c7a9'}} footer bordered>
+                    <Body>
+                      <Label>Contenido</Label>
+                      <Text>{this.state.tips.contenido}</Text>
+                    </Body>
                     </CardItem>
                   </Card>
                 </Content>
-              </ImageBackground>
+                
+              </ImageBackground>       
           </Container>
         )
     }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '105%',
-    height: '100%',
-    position: 'relative',
-    right: '4%',
-},
+  background: {
+    flex:1,
+    resizeMode: 'cover'
+  },
 tituloCartelera: {
     flex: 1,
     width: '100%',
@@ -128,8 +110,10 @@ cartelera: {
     fontWeight: 'bold'
 },
 header: {
-    flex: 1,
-    flexDirection: 'row'
+  backgroundColor: 'transparent', 
+  borderRadius: 10,
+  top: '5%',
+  width:'100%'
 },
 logo: {
     width: 250,
@@ -146,5 +130,16 @@ titulo: {
 },
 card: {
   backgroundColor: '#ffffffa9'
-}
+},
+textoHeader: {
+  color: '#ffffff',
+  fontSize: 20,
+  left: '10%'
+},
+header: {
+  backgroundColor: 'transparent', 
+  borderRadius: 10,
+  top: '5%',
+  width:'100%'
+},
 })

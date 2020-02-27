@@ -8,7 +8,7 @@ const TiempoHoraModel = new Schema(
     resumen: {type: String},
     precipitacionProb: {type: String},
     precipitacionTipo: {type: String},
-    temperature: {type: String},
+    temperatura: {type: String},
     humedad: {type: String},
     velocidadViento: {type: String},
   }

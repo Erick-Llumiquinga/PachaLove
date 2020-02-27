@@ -7,7 +7,8 @@ const usuarioModel = new Schema(
     nombre: {type: String},
     correo: {type: String},
     clave: {type: String},
-    img: {type:String}
+    img: {type: Binary},
+    typeImg: {type: String}
   }
 );
 

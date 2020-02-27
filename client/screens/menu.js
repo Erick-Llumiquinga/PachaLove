@@ -30,11 +30,11 @@ export default class Menu extends Component{
                     <Label style={{textAlign: 'center', fontSize: 40, color: 'white'}}>Menu</Label>
                   </View>
                     <View style={{marginTop: '20%', position: 'relative', }}>
+                        <Text onPress={() =>this.props.navigation.push('Inicio')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Inicio</Text>
+                        <View style={styles.hairline} />
                         <Text onPress={() =>this.props.navigation.push('Huerto')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Mi Huerto</Text>
                         <View style={styles.hairline} />
-                        <Text onPress={() =>this.props.navigation.push('Reciclaje')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Tips Reciclaje</Text>
-                        <View style={styles.hairline} />
-                        <Text onPress={() =>this.props.navigation.push('Inicio')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Tips Sembrio</Text>
+                        <Text onPress={() =>this.props.navigation.push('Tips')} style={{color: 'white', fontSize: 20, marginTop: '15%'}}>Tips Reciclaje</Text>
                         <View style={styles.hairline} />
                     </View>
               </Content>

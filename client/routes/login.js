@@ -41,7 +41,7 @@ const screens = {
             headerShown: false
         }
     },
-    Reciclaje: {
+    Tips: {
         screen: Reciclaje,
         navigationOptions: {
             headerShown: false

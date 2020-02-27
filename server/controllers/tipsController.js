@@ -1,13 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const TiempoModel = require('../db/models/tiempoModel');
-const Tiempo = require('../models/tiempoModel');
 const routerApi = express.Router();
 const db = mongoose.connect('mongodb://localhost/PachaLove');
+const TipsModel = require('../db/models/tipsModel')
 
 routerApi.route('/time/allTips')
   .get((req, res) => {
-    Tips.find((err,resp) => {
+    TipsModel.find((err,resp) => {
       if(err){
         return res.json(err);
       }
@@ -17,12 +16,13 @@ routerApi.route('/time/allTips')
 
 routerApi.route('/time/newTip')
   .post((req, res) => {
-    let tip = new TipsModel(req.body)
+    let tips = new TipsModel(req.body)
 
-    tip.save((err,resp) => {
+    tips.save((err,resp) => {
       if(err){
         return res.json(err);
       }
+      console.log('listooooo')
       return res.json(resp)
     })
   });
@@ -51,3 +51,5 @@ routerApi.route('/time/deleteTip')
       return res.json(resp)
     })
   });
+
+  module.exports = routerApi;

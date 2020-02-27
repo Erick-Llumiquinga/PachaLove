@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Icon, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
-
+import { Image, Modal, TouchableHighlight, View, Alert, TextInput, ScrollView, StyleSheet, ImageBackground, AsyncStorage,TouchableOpacity } from 'react-native';
+import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
+import { Icon } from 'react-native-elements'
 
 const API_URL = 'http://192.168.100.12:8001/server/menu/platos'
 const API = 'http://192.168.100.12:8001/server/menu'
@@ -9,128 +9,93 @@ export default class Tips extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            plato: this.plato,
-            valor: this.valor,
-            datos: []
+            tips: []
         }
     }
 
-
-    async componentDidMount() {
+    componentDidMount(){
+      this.getData();
     }
 
-    localStoragge = async () =>{
-        try{
-             this.state.usuario = await AsyncStorage.getItem('User');
+    getData = () => {
+
+      const API_URL = `http://192.168.100.3:3000/server/time/allTips`;
+      const header = {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         }
-        catch(error){
-            console.log(error)
-        }
-    }
+      }
 
-    realizarPedido = () => {
-      let tabla = "pedido";
-
-        let data = {
-            tabla: tabla,
-            datos:
-              {
-                platoId: 1,
-                descripcion: this.state.plato,
-                cantidad: 2,
-              }
-        };
-
-        let header = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        }
-
-        return fetch(API,header)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            if(responseJson.ok != false){
-                alert('Pedido realizado')
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        })
-    }
-
-    getPlatos = () => {
-
-        let header = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-        }
-
-       return fetch(API_URL,header)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                if(responseJson.ok != false){
-                    this.state.datos = responseJson.datos
-                    alert(this.state.datos)
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }
-
-    signOut = async () => {
+      return fetch(API_URL, header)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        this.setState({tips: responseJson})
+      })
+      .catch((err) => {
+        alert(err)
+      })
 
     }
+
+    localStoragge = async (data) => {
+      try{
+          await AsyncStorage.setItem('tips', data);
+      }
+      catch(error){
+          console.log(error);
+      }
+      this.props.navigation.push('Detalle');
+  }
 
     render() {
         return (
           <Container>
-              <Content style={styles.container}>
-              <Header hasTabs style={styles.header}>
-              <Left>
-
+          <ImageBackground source={require('../assets/img/siembra.jpg')} style={styles.background}>
+          <Header hasTabs style={styles.header}>
+              <Left> 
+                <Icon name='user-circle' type='font-awesome' color='white' size={32} onPress={() => this.props.navigation.push('Perfil')}/>         
               </Left>
               <Body>
-                <Text style={styles.textoHeader}>Inicio</Text>
+                <Text style={styles.textoHeader} onPress={this.get} onPress={this.getClima}>Tips </Text>
               </Body>
               <Right>
-
+                <Icon name='more-vert' type='material' color='white' size={40} style={{right: '5%'}} onPress={() => this.props.navigation.push('Menu')}/>
               </Right>
             </Header>
+          <ScrollView style={{marginHorizontal: '5%', top: '5%'}}>
             <Content>
-              <Label>10º C</Label>
-              <Text>Presipitacion baja</Text>
+              {
+                this.state.tips.map(item => 
+                  <TouchableOpacity onPress={() => this.localStoragge(JSON.stringify(item))} key={item._id}>
+                  <Card style={{backgroundColor: 'rgba(107, 153, 54, 0.527)'}} >
+                    <CardItem header style={styles.card} bordered>
+                      <Left>
+                        <Thumbnail large  source={{uri:  item.imagen}} />
+                        <Text style={{textAlign: 'center', color: 'white', fontSize: 20}}>{item.titulo}</Text>
+                      </Left>
+                    </CardItem>
+                    <CardItem footer style={styles.card}>
+                      <Text style={{color: 'white', fontSize: 16}}>{item.descripcion}</Text>
+                    </CardItem>
+                  </Card>
+                  </TouchableOpacity>
+                )
+              }
             </Content>
-            <Content>
-            <Label>10º C</Label>
-            <Text>OR</Text>
-            <Text>OR</Text>
-            <Text>OR</Text>
-            <View style={styles.hairline} />
-            </Content>
-            <Content>
-            </Content>
-            
-              </Content>
-          </Container>
-
+          </ScrollView>
+          </ImageBackground>
+        </Container>
+    
         )
     }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    //position: 'relative',
-    backgroundColor: '#1E1C1C'
+  background: {
+    flex:1,
+    resizeMode: 'cover'
   },
   textoHeader: {
     color: '#ffffff',
@@ -138,13 +103,17 @@ const styles = StyleSheet.create({
     left: '10%'
   },
   header: {
-    backgroundColor: 'rgba(255, 255, 255, 0.336)', 
-    top: '12%',
-    borderRadius: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.534)', 
+    borderRadius: 10,
+    top: '5%',
+    width:'100%'
   },
   hairline: {
     backgroundColor: '#A2A2A2',
     height: 1,
     width: '100%'
+  },
+  card: {
+    backgroundColor: 'transparent'
   }
 })

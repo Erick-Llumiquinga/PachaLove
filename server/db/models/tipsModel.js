@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const TipsModel = new Schema(
+const Tip = new Schema(
   {
     titulo: {type: String},
     descripcion: {type: String},
@@ -11,4 +11,4 @@ const TipsModel = new Schema(
   }
 );
 
-module.exports = mongoose.model('Tips', TipsModel,'Tips');
+module.exports = mongoose.model('Tips', Tip);

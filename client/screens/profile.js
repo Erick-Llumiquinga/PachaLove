@@ -3,6 +3,7 @@ import { Image, Modal, TouchableHighlight, View, Alert, TextInput, FlatList, Sty
 import { Container, Header, Content, Card, CardItem, Footer, FooterTab, Button, Text, Badge,Thumbnail, Left, Body, Right, Label } from 'native-base';
 import base64 from 'react-native-base64';
 import { Icon } from 'react-native-elements'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Perfil extends Component{
     constructor(props) {
@@ -15,15 +16,29 @@ export default class Perfil extends Component{
           img: '',
           ruta:'',
           API: '',
-          user: {}
+          user: {},
+          loading: false
         }
     }
 
 
-    async componentDidMount() {
+    componentDidMount() {
       this.localStoragge();
-      this.setState({API: `http://192.168.100.12:8001/server/${this.state.ruta}`});
     }
+
+    cargar = async () => {
+      if(this.state.usuario != "" && this.state.clave != ""){
+          try{
+              await this.setState({loading: true})
+          }
+          catch(err){
+              alert(err)
+          }
+          return this.signOut();    
+      } 
+      
+      return alert("Campos Vacios")
+  }
 
     localStoragge = async () =>{
         try{
@@ -34,28 +49,7 @@ export default class Perfil extends Component{
         }
     }
 
-    /*getDatos = () => {
-      this.setState({ruta: `getData?email=${this.state.email}`})
-
-      let header = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        }
-      }
-
-      return fetch(this.state.API,header)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        responseJson.forEach(element => {
-          this.setState({nombre: element.nombre, img: element.img})
-        });
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-    }*/
+    
 
     cambioClave = () => {
 
@@ -119,18 +113,20 @@ export default class Perfil extends Component{
       })
     }
 
-    signOut = async () => {
-      try{
-        await AsyncStorage.clear();
-      }
-      catch(err){
-        alert(err)
-      }
-    }
-
     back = () =>{
       return this.props.navigation.push('Inicio')
     }
+
+    signOut = async () =>{
+      try{
+           await AsyncStorage.clear();
+      }
+      catch(error){
+          console.log(error)
+      }
+      this.setState({loading: false})
+      this.props.navigation.push('Login');
+  }
 
     render() {
         return (
@@ -140,35 +136,47 @@ export default class Perfil extends Component{
                   <Left> 
                     <Icon name='reply' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Inicio')}/>        
                   </Left >
-                  <Right>
-                    <Icon name='sign-out' type='octicon' color='white' size={25} onPress={() => this.props.navigation.push('Perfil')}/>
-                    <Text onPress={this.signOut}>Cerrar Sesion  </Text>
+                  <Right onPress={this.cargar}>
+                  <Text onPress={this.signOut} style={{color: 'white'}} >Cerrar Sesion</Text>
+                    <Icon name='sign-out' type='octicon' color='white' size={25}/>
                   </Right>
                 </Header>
                   <Content style={styles.user}>
                     <Icon name='user-circle' type='font-awesome' color='white' size={200} />
                     <Image source={{uri: this.state.img}} />
-                    <Text>{this.state.user.nombre}</Text>
+                    <Text style={{textAlign: 'center', color: 'white', fontSize: 28, marginTop: '5%'}}>{this.state.user.nombre}</Text>
                   </Content>
                     
                   <Content style={{marginTop: '30%', height: '100%'}}>
-                    <Label>Informacio Personal</Label>
-                    <Icon name='verified-user' type='material' color='white' size={35} onPress={() => this.props.navigation.push('Inicio')}/>
-                    <Text onPress={() =>this.props.navigation.push('Menu')}>Datos Persoanles</Text>
-                    <View style={styles.hairline} />
-                    <Text onPress={() =>this.props.navigation.push('Menu')}>Cambiar Contraseña</Text>
-                    <View style={styles.hairline} />
+                    <Label style={{fontSize: 20, color: 'white'}}>Informacio Personal</Label>
+                    <View style={{flex: 1, flexDirection: 'row', marginVertical: '3%', marginHorizontal: '5%'}}>
+                  <Body>
+                    <View >
+                      <Text style={{fontSize: 20, color: 'white'}}>Correo: {this.state.user.correo}</Text>  
+                    </View>
+                    <View style={styles.hairline} /> 
+                  </Body>
+                </View>
                   </Content>
                 </Content>
+                <Spinner
+                    visible={this.state.loading}
+                    textContent={'Cargando..'}
+                    color='white'
+                    overlayColor='rgba(0, 0, 0, 0.568)'
+                    textStyle={styles.spinnerTextStyle}
+                />
           </Container>
         )
     }
 }
 
 const styles = StyleSheet.create({
+  spinnerTextStyle: {
+    color: 'white'
+},
   container: {
     flex:1,
-    //resizeMode: 'cover',
     height: '100%',
     backgroundColor: '#1E1C1C'
   },

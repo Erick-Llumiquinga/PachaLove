@@ -4,7 +4,7 @@ import { Container, Header, Content, Card, Item,CardItem, Footer, Input,FooterTa
 import { Icon } from 'react-native-elements'
 import Spinner from 'react-native-loading-spinner-overlay';
 
-const API_URL = 'http://192.168.100.12:8001/server/menu/platos'
+const API_URL = 'http://127.0.0.1:8001/server/menu/platos'
 
 export default class Nueva extends Component{
     constructor(props) {

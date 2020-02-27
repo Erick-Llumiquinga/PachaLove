@@ -15,18 +15,16 @@ routerApi.route('/getDataUser')
     })
   });
 
-routerApi.route('/login')
-  .post((req, res) => {
-    User.findOne({nombre: req.body.nombre}, (err, resp) => {
+  routerApi.route('/updateDataUser')
+  .put((req, res) => {
+    let id = req.body.id
+    let Query = req.body
+
+    TipsModel.updateOne({'_id': id}, Query, (err,resp) => {
       if(err){
         return res.json(err);
       }
-      else if(req.body.clave === resp.clave){
-        return res.send('Loggeded') 
-      }
-      else{
-        return res.send("Usuario no encontrado");
-      }
+      return res.json(resp)
     })
   });
 
